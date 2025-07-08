@@ -16,12 +16,19 @@ async def save_avr_to_excel(file_path: str = "C:/Users/22671/Desktop/PROJECTS/bo
     ws = wb.active
     ws.title = "Данные из 1С"
 
-    ws.append(["Дата составления", "Состояние", "Контрагент", "Дата выполнения работ"])
+    ws.append(["Дата составления", 
+               "Состояние", 
+               "Контрагент",
+               "Итого стоимость с учетом косвенных налогов",
+               "Дата выполнения работ"
+               
+    ])
 
     ws.column_dimensions['A'].width=20
     ws.column_dimensions['B'].width=20
     ws.column_dimensions['C'].width=90
-    ws.column_dimensions['D'].width=25
+    ws.column_dimensions['D'].width=45
+    ws.column_dimensions['E'].width=25
 
     for doc in documents:
         date_sostavleniya = doc.get("датаСоставления", "")
@@ -37,12 +44,16 @@ async def save_avr_to_excel(file_path: str = "C:/Users/22671/Desktop/PROJECTS/bo
             date_vypolneniya_formatted = date_obj.strftime("%d.%m.%Y")
         else:
             date_vypolneniya_formatted = ""
-        
+
+
+        total_cost = doc.get("итогоСтоимостьСУчетомКосвенныхНалогов", "")
+    
         ws.append([
             date_sostavleniya_formatted,
             doc.get("статус", ""),
             doc.get("контрагент", ""),
-            date_vypolneniya_formatted,
+            total_cost,
+            date_vypolneniya_formatted
         ])
     # print("💾 Сохраняем файл...")
     wb.save(file_path)

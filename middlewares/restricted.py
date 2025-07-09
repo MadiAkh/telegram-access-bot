@@ -101,3 +101,10 @@ def get_reject_count(user_id: int) -> int:
 def get_all_users_info():
     with open(USERS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
+
+def is_allowed_user(user_id: int) -> bool:
+    """Проверяет, есть ли пользователь в списке пользователей или админов"""
+    with open(USERS_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    all_users = data.get("users", []) + data.get("admins", [])
+    return any(str(user_id) == str(user["id"]) for user in all_users)
